@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.weless.quiz.dao.CardMapper">
+    <resultMap id="cardMap" type="Card">
+        <id column="card_id" property="cardId" />
+        <result column="front" property="front" />
+        <result column="back" property="back" />
+        <result column="progress" property="progress" />
+        <result column="next_study_date" property="nextStudyDate" />
+        <result column="setId" property="setId" />
+    </resultMap>
+
+    <select id="selectCardsBySetId" resultMap="cardMap">
+        SELECT card_id, front, back, progress
+        FROM cards
+        WHERE set_id = #{setId}
+    </select>
+
+    <select id="selectCardsBySetIdBeforeToday" resultMap="cardMap">
+        SELECT card_id, front, back, progress
+        FROM cards
+        WHERE set_id = #{setId} AND next_study_date &lt;= (SELECT CURRENT_DATE())
+    </select>
+
+    <insert id="insertCards">
+        INSERT INTO cards(front, back, next_study_date, set_id)
+        VALUES (#{front}, #{back}, (SELECT CURRENT_DATE()), #{setId})
+    </insert>
+
+    <update id="updateCardsByCardId">
+        UPDATE cards
+        <if test="progress == null">
+            SET front = #{front}, back = #{back}
+        </if>
+        <if test="progress != null">
+            SET progress = #{progress}, next_study_date = #{nextStudyDate}
+        </if>
+        WHERE card_id = #{cardId}
+    </update>
+
+    <delete id="deleteCardsByCardId">
+        DELETE FROM cards
+        WHERE card_id = #{cardId}
+    </delete>
+</mapper>

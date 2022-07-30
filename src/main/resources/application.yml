@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mariadb://weless.top:3306/quiz
+    username: root
+    password: 131890
+  redis:
+    host: weless.top
+    port: 6379
+    database: 0
+    password: 131890
+
+mybatis:
+  type-aliases-package: top.weless.quiz.entity
+  mapper-locations: mappers/*.xml

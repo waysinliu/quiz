@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.weless.quiz.dao.SetMapper">
+    <resultMap id="setMap" type="Set">
+        <id column="set_id" property="setId" />
+        <result column="title" property="title" />
+        <result column="description" property="description" />
+        <result column="user_id" property="userId" />
+        <result column="count" property="count" />
+    </resultMap>
+
+    <select id="selectSetsBySetId" resultMap="setMap">
+        SELECT set_id, title, description, user_id
+        FROM sets
+        WHERE set_id = #{setId}
+    </select>
+
+    <select id="selectSetsByUserId" resultMap="setMap">
+        SELECT sets.set_id, title, count(cards.set_id) AS count
+        FROM sets LEFT JOIN cards ON sets.set_id = cards.set_id
+        WHERE user_id = #{userId}
+        GROUP BY cards.set_id ORDER BY sets.set_id
+    </select>
+
+    <update id="updateSetsBySetId">
+        UPDATE sets
+        SET title = #{title}, description = #{description}
+        WHERE set_id = #{setId}
+    </update>
+</mapper>
